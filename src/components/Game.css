@@ -128,11 +128,51 @@
   font-weight: 300;
 }
 
+.hard-mode-toggle {
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hard-mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
 .game-main {
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
   padding: 2rem;
+}
+
+.guesses-remaining {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.guesses-remaining p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.guesses-remaining strong {
+  font-size: 1.3rem;
+  font-weight: 700;
 }
 
 .found-categories {
@@ -296,6 +336,13 @@
   color: #666;
 }
 
+.game-over-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .play-again-btn {
   display: inline-block;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -305,7 +352,13 @@
   font-weight: 600;
   border-radius: 8px;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.play-again-btn.secondary {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
 }
 
 .play-again-btn:hover {
@@ -313,9 +366,66 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
+.play-again-btn.secondary:hover {
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+}
+
+.hard-mode-badge {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.game-lost {
+  background: #fee;
+  border: 2px solid #ef4444;
+}
+
+.game-lost h2 {
+  color: #ef4444;
+}
+
+.remaining-categories {
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.remaining-categories h3 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+.revealed-category {
+  background: white;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.revealed-category strong {
+  color: #667eea;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
 @media (max-width: 768px) {
   .game-header h1 {
     font-size: 1.8rem;
+  }
+
+  .hard-mode-toggle {
+    position: static;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
   }
 
   .word-grid {

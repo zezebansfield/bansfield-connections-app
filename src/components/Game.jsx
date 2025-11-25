@@ -11,6 +11,9 @@ function Game() {
   const [selectedWords, setSelectedWords] = useState([]);
   const [foundCategories, setFoundCategories] = useState([]);
   const [modal, setModal] = useState({ isOpen: false, message: "", type: "" });
+  const [hardMode, setHardMode] = useState(false);
+  const [guessesRemaining, setGuessesRemaining] = useState(4);
+  const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     if (!categories || categories.length === 0) {
@@ -59,6 +62,23 @@ function Game() {
       );
       setSelectedWords([]);
     } else {
+      // Incorrect guess - decrement guesses in hard mode
+      if (hardMode) {
+        const newGuessesRemaining = guessesRemaining - 1;
+        setGuessesRemaining(newGuessesRemaining);
+
+        if (newGuessesRemaining === 0) {
+          setGameOver(true);
+          setModal({
+            isOpen: true,
+            message: "Game Over! You've run out of guesses in Hard Mode.",
+            type: "error",
+          });
+          setSelectedWords([]);
+          return;
+        }
+      }
+
       // Check how close they are to each category
       let closestMatch = 0;
       categories.forEach((category) => {
@@ -94,6 +114,33 @@ function Game() {
 
   const closeModal = () => {
     setModal({ isOpen: false, message: "", type: "" });
+  };
+
+  const toggleHardMode = () => {
+    if (!hardMode) {
+      // Turning on hard mode
+      setHardMode(true);
+      setGuessesRemaining(4);
+      setGameOver(false);
+    } else {
+      // Turning off hard mode
+      setHardMode(false);
+      setGuessesRemaining(4);
+      setGameOver(false);
+    }
+  };
+
+  const restartGame = () => {
+    // Reset game state
+    setGameOver(false);
+    setGuessesRemaining(4);
+    setFoundCategories([]);
+    setSelectedWords([]);
+
+    // Re-shuffle all words
+    const allWords = categories.flatMap((category) => category.words);
+    const shuffled = [...allWords].sort(() => Math.random() - 0.5);
+    setShuffledWords(shuffled);
   };
 
   const handleDeselectAll = () => {
@@ -132,9 +179,20 @@ function Game() {
         </Link>
         <h1>Connections Game</h1>
         <p className="subtitle">Find groups of four related words</p>
+        <button onClick={toggleHardMode} className="hard-mode-toggle">
+          {hardMode ? "🔥 Hard Mode: ON" : "Hard Mode: OFF"}
+        </button>
       </header>
 
       <main className="game-main">
+        {/* Hard Mode Guesses Remaining */}
+        {hardMode && !gameOver && foundCategories.length < 4 && (
+          <div className="guesses-remaining">
+            <p>
+              Guesses Remaining: <strong>{guessesRemaining}</strong>
+            </p>
+          </div>
+        )}
         {/* Found Categories */}
         {foundCategories.length > 0 && (
           <div className="found-categories">
@@ -147,14 +205,38 @@ function Game() {
           </div>
         )}
 
-        {/* Game Over */}
+        {/* Game Over - Win */}
         {foundCategories.length === 4 ? (
           <div className="game-over">
             <h2>🎉 Congratulations!</h2>
             <p>You found all the categories!</p>
+            {hardMode && (
+              <p className="hard-mode-badge">Hard Mode Complete! 🔥</p>
+            )}
             <Link to="/create" className="play-again-btn">
               Create New Game
             </Link>
+          </div>
+        ) : gameOver ? (
+          <div className="game-over game-lost">
+            <h2>💔 Game Over</h2>
+            <p>You ran out of guesses in Hard Mode!</p>
+            <div className="remaining-categories">
+              <h3>The categories were:</h3>
+              {categories.map((category, index) => (
+                <div key={index} className="revealed-category">
+                  <strong>{category.name}:</strong> {category.words.join(", ")}
+                </div>
+              ))}
+            </div>
+            <div className="game-over-buttons">
+              <button onClick={restartGame} className="play-again-btn">
+                Try Again
+              </button>
+              <Link to="/create" className="play-again-btn secondary">
+                New Game
+              </Link>
+            </div>
           </div>
         ) : (
           <>
@@ -196,7 +278,7 @@ function Game() {
                 <button
                   onClick={handleSubmit}
                   className="btn-submit-guess"
-                  disabled={selectedWords.length !== 4}
+                  disabled={selectedWords.length !== 4 || gameOver}
                 >
                   Submit
                 </button>
