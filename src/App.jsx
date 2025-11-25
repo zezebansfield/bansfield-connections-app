@@ -6,7 +6,7 @@ import "./App.css";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/bansfield-connections-app">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/create" element={<Create />} />
