@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 import "./Home.css";
 import bansfieldFamily from "../assets/bansfieldFamily.png";
 
@@ -11,7 +12,7 @@ function Home() {
 
   useEffect(() => {
     // Fetch games from the API
-    fetch("https://permeant-mathias-ungarbed.ngrok-free.dev/api/games", {
+    fetch(`${API_BASE_URL}/games`, {
       headers: {
         "Content-Type": "application/json",
         "ngrok-skip-browser-warning": "true",

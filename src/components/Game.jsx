@@ -5,6 +5,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../config";
 import "./Game.css";
 
 function Game() {
@@ -31,15 +32,12 @@ function Game() {
   useEffect(() => {
     if (gameId && !stateCategories) {
       setLoading(true);
-      fetch(
-        `https://permeant-mathias-ungarbed.ngrok-free.dev/api/games/${gameId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
-        }
-      )
+      fetch(`${API_BASE_URL}/games/${gameId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch game");

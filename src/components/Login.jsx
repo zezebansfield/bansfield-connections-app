@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 import "./Login.css";
 
 function Login() {
@@ -9,7 +10,7 @@ function Login() {
   const [users, setUsers] = useState(undefined);
 
   useEffect(() => {
-    fetch("https://permeant-mathias-ungarbed.ngrok-free.dev/api/users", {
+    fetch(`${API_BASE_URL}/users`, {
       headers: {
         "Content-Type": "application/json",
         "ngrok-skip-browser-warning": "true",
@@ -49,17 +50,14 @@ function Login() {
         }
 
         // Create new user
-        const response = await fetch(
-          "https://permeant-mathias-ungarbed.ngrok-free.dev/api/users",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "ngrok-skip-browser-warning": "true",
-            },
-            body: JSON.stringify({ username: username.trim() }),
-          }
-        );
+        const response = await fetch(`${API_BASE_URL}/users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+          body: JSON.stringify({ username: username.trim() }),
+        });
 
         const data = await response.json();
 
@@ -80,7 +78,7 @@ function Login() {
 
         // Login existing user
         const response = await fetch(
-          `https://permeant-mathias-ungarbed.ngrok-free.dev/api/users?username=${encodeURIComponent(
+          `${API_BASE_URL}/users?username=${encodeURIComponent(
             username.trim()
           )}`,
           {

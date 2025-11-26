@@ -20,8 +20,9 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "server": "node server/index.js",
-    "setup-db": "node server/setup-database.js"
+    "server": "node src/server/index.js",
+    "setup-db": "node src/server/setup-database.js",
+    "check": "node check-setup.js"
   },
   "eslintConfig": {
     "extends": [
