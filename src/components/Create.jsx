@@ -4,12 +4,15 @@ import "./Create.css";
 
 function Create() {
   const navigate = useNavigate();
+  const [gameTitle, setGameTitle] = useState("");
   const [categories, setCategories] = useState([
     { name: "", words: ["", "", "", ""] },
     { name: "", words: ["", "", "", ""] },
     { name: "", words: ["", "", "", ""] },
     { name: "", words: ["", "", "", ""] },
   ]);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   const handleCategoryNameChange = (categoryIndex, value) => {
     const newCategories = [...categories];
@@ -23,15 +26,65 @@ function Create() {
     setCategories(newCategories);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Categories submitted:", categories);
+    setError("");
+    setSaving(true);
 
-    // Navigate to game with categories data
-    navigate("/game", { state: { categories } });
+    // Get user ID from localStorage
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      setError("You must be logged in to create a game");
+      setSaving(false);
+      return;
+    }
+
+    // Transform categories to API format
+    const apiCategories = categories.map((category, index) => ({
+      category_name: category.name,
+      difficulty_level: index + 1, // 1-4 based on order
+      description: null,
+      words: category.words,
+    }));
+
+    const gameData = {
+      title: gameTitle,
+      creator_id: parseInt(userId),
+      categories: apiCategories,
+    };
+
+    try {
+      const response = await fetch(
+        "https://permeant-mathias-ungarbed.ngrok-free.dev/api/games",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+          body: JSON.stringify(gameData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Failed to create game");
+        setSaving(false);
+        return;
+      }
+
+      // Navigate to the newly created game
+      navigate(`/game?id=${data.id}`);
+    } catch (err) {
+      console.error(err);
+      setError("Connection error. Please make sure the server is running.");
+      setSaving(false);
+    }
   };
 
   const handleReset = () => {
+    setGameTitle("");
     setCategories([
       { name: "", words: ["", "", "", ""] },
       { name: "", words: ["", "", "", ""] },
@@ -43,7 +96,7 @@ function Create() {
   return (
     <div className="create-container">
       <header className="create-header">
-        <Link to="/" className="back-link">
+        <Link to="/home" className="back-link">
           ← Back to Home
         </Link>
         <h1>Create Connection Game</h1>
@@ -52,6 +105,23 @@ function Create() {
 
       <main className="create-main">
         <form onSubmit={handleSubmit}>
+          {/* Game Title */}
+          <div className="game-title-section">
+            <label htmlFor="game-title">Game Title</label>
+            <input
+              id="game-title"
+              type="text"
+              placeholder="e.g., Family Trivia"
+              value={gameTitle}
+              onChange={(e) => setGameTitle(e.target.value)}
+              required
+              className="game-title-input"
+            />
+          </div>
+
+          {/* Error Message */}
+          {error && <div className="error-message">{error}</div>}
+
           <div className="categories-grid">
             {categories.map((category, categoryIndex) => (
               <div key={categoryIndex} className="category-card">
@@ -100,11 +170,16 @@ function Create() {
           </div>
 
           <div className="action-buttons">
-            <button type="button" onClick={handleReset} className="btn-reset">
+            <button
+              type="button"
+              onClick={handleReset}
+              className="btn-reset"
+              disabled={saving}
+            >
               Reset All
             </button>
-            <button type="submit" className="btn-submit">
-              Save Categories
+            <button type="submit" className="btn-submit" disabled={saving}>
+              {saving ? "Creating Game..." : "Create & Play Game"}
             </button>
           </div>
         </form>

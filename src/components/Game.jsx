@@ -1,11 +1,23 @@
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  Link,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./Game.css";
 
 function Game() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { categories } = location.state || {};
+  const [searchParams] = useSearchParams();
+  const gameId = searchParams.get("id");
+  const { categories: stateCategories } = location.state || {};
+
+  const [categories, setCategories] = useState(stateCategories || null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [gameTitle, setGameTitle] = useState("");
 
   const [shuffledWords, setShuffledWords] = useState([]);
   const [selectedWords, setSelectedWords] = useState([]);
@@ -15,9 +27,50 @@ function Game() {
   const [guessesRemaining, setGuessesRemaining] = useState(4);
   const [gameOver, setGameOver] = useState(false);
 
+  // Fetch game from API if id is in URL
+  useEffect(() => {
+    if (gameId && !stateCategories) {
+      setLoading(true);
+      fetch(
+        `https://permeant-mathias-ungarbed.ngrok-free.dev/api/games/${gameId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch game");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Transform API categories to match expected format
+          const transformedCategories = data.categories.map((cat) => ({
+            name: cat.category_name,
+            words: cat.words,
+            difficulty_level: cat.difficulty_level,
+            description: cat.description,
+          }));
+          setCategories(transformedCategories);
+          setGameTitle(data.title);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setError("Failed to load game");
+          setLoading(false);
+        });
+    }
+  }, [gameId, stateCategories]);
+
   useEffect(() => {
     if (!categories || categories.length === 0) {
-      navigate("/create");
+      if (!loading && !gameId) {
+        navigate("/create");
+      }
       return;
     }
 
@@ -25,7 +78,7 @@ function Game() {
     const allWords = categories.flatMap((category) => category.words);
     const shuffled = [...allWords].sort(() => Math.random() - 0.5);
     setShuffledWords(shuffled);
-  }, [categories, navigate]);
+  }, [categories, navigate, loading, gameId]);
 
   const handleWordClick = (word) => {
     if (selectedWords.includes(word)) {
@@ -151,6 +204,30 @@ function Game() {
     setShuffledWords([...shuffledWords].sort(() => Math.random() - 0.5));
   };
 
+  if (loading) {
+    return (
+      <div className="game-container">
+        <div className="loading-container">
+          <p>Loading game...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="game-container">
+        <div className="error-container">
+          <h2>Error</h2>
+          <p>{error}</p>
+          <Link to="/home" className="back-link">
+            ← Back to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (!categories) {
     return null;
   }
@@ -174,10 +251,10 @@ function Game() {
       )}
 
       <header className="game-header">
-        <Link to="/create" className="back-link">
-          ← New Game
+        <Link to="/home" className="back-link">
+          ← Back to Home
         </Link>
-        <h1>Connections Game</h1>
+        <h1>{gameTitle || "Connections Game"}</h1>
         <p className="subtitle">Find groups of four related words</p>
         <button onClick={toggleHardMode} className="hard-mode-toggle">
           {hardMode ? "🔥 Hard Mode: ON" : "Hard Mode: OFF"}
