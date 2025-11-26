@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/bansfield-connections-app/static/css/main.a7937692.css",
+    "main.css": "/bansfield-connections-app/static/css/main.82cddf7c.css",
     "main.js": "/bansfield-connections-app/static/js/main.fd728712.js",
     "static/media/bansfieldFamily.png": "/bansfield-connections-app/static/media/bansfieldFamily.6c050bdf1ffe802f0bb6.png",
     "index.html": "/bansfield-connections-app/index.html",
-    "main.a7937692.css.map": "/bansfield-connections-app/static/css/main.a7937692.css.map",
+    "main.82cddf7c.css.map": "/bansfield-connections-app/static/css/main.82cddf7c.css.map",
     "main.fd728712.js.map": "/bansfield-connections-app/static/js/main.fd728712.js.map"
   },
   "entrypoints": [
-    "static/css/main.a7937692.css",
+    "static/css/main.82cddf7c.css",
     "static/js/main.fd728712.js"
   ]
 }
