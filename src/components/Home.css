@@ -162,22 +162,155 @@
   opacity: 0.8;
 }
 
-@media (max-width: 768px) {
+.bansfield-family-image {
+  width: 70%;
+  height: 70%;
+  object-fit: cover;
+  max-width: 100%;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 480px) {
+  .app-header {
+    padding: 2rem 1rem;
+  }
+
   .app-header h1 {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 
   .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .app-main {
+    padding: 1.5rem 1rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .card h2 {
+    font-size: 1.5rem;
+  }
+
+  .card p {
+    font-size: 1rem;
+  }
+
+  .counter-section button,
+  .nav-link {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
     font-size: 1rem;
   }
 
   .info-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .info-card {
+    padding: 1.5rem;
+  }
+
+  .info-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .info-card p {
+    font-size: 0.95rem;
+  }
+
+  .bansfield-family-image {
+    width: 90%;
+    height: auto;
+  }
+
+  .app-footer {
+    padding: 1rem;
+    font-size: 0.9rem;
   }
 }
 
-.bansfield-family-image {
-  width: 70%;
-  height: 70%;
-  object-fit: cover;
+@media (min-width: 481px) and (max-width: 768px) {
+  .app-header {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .app-header h1 {
+    font-size: 2.25rem;
+  }
+
+  .subtitle {
+    font-size: 1.05rem;
+  }
+
+  .app-main {
+    padding: 2rem 1.5rem;
+  }
+
+  .card {
+    padding: 1.75rem;
+  }
+
+  .card h2 {
+    font-size: 1.75rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .bansfield-family-image {
+    width: 80%;
+    height: auto;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .app-main {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Landscape mode adjustments for mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .app-header {
+    padding: 1.5rem 1rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+  }
+
+  .app-main {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .bansfield-family-image {
+    width: 50%;
+    height: auto;
+  }
 }
